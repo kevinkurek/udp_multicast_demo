@@ -65,8 +65,8 @@ This setup closely mirrors real-world SIP feed distribution, where financial ins
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/udpmulticast_demo.git
-   cd udpmulticast_demo
+   git clone https://github.com/yourusername/udp_multicast_demo.git
+   cd udp_multicast_demo
    ```
 2. Build the project:
 
