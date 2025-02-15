@@ -2,6 +2,36 @@
 
 This project demonstrates a UDP multicast server (SIP Feed) and client (Hedge Fund, market maker, investment bank, etc..), along with a TCP recovery server. The UDP multicast server sends multicast packets, the client receives them, and requests missing packets from the TCP recovery server if needed.
 
+## Example Output
+
+When running the project, you should see output similar to the following:
+
+```
+// simulate realtime data from udp_server (SIP Feed: NYSE, AMEX, NASDAQ)
+// $ cargo run --bin udp_multicast_server
+Sent: SEQ:6|PRICE:106
+Sent: SEQ:7|PRICE:107
+Sent: SEQ:8|PRICE:108
+Sent: SEQ:9|PRICE:109
+Dropped packet SEQ:10 // NOTE: server doesn't actually drop packets, it's simulating the udp_client not receiving this packet.
+
+// data received by udp_client (Hedge Fund, Market Maker, Investment Bank, etc..)
+// $ cargo run --bin udp_multicast_client
+Received: SEQ:7|PRICE:107
+Received: SEQ:8|PRICE:108
+Received: SEQ:9|PRICE:109
+Received: SEQ:11|PRICE:111
+⚠️ Missing packet(s)! Requesting SEQ:10 from recovery server...
+Sending recovery request: GET SEQ:10
+✅ Recovered: Recovered data for SEQ:10 // comes after tcp_recovery sends data back
+
+// tcp_recovery_server acknowledging a request for dropped packets
+// $ cargo run --bin tcp_recovery_server
+Received request: GET SEQ:1
+Received request: GET SEQ:10
+```
+
+
 ## **Background**
 
 For those newer to SIP feeds (Securities Information Processors), there are three core SIP feeds: Tape A, Tape B, and Tape C, which distribute consolidated market data for U.S. equities.
@@ -75,32 +105,3 @@ The [udp_multicast_client](vscode-file://vscode-app/Applications/Visual%20Studio
 ### TCP Recovery Server
 
 The [tcp_recovery_server](vscode-file://vscode-app/Applications/Visual%20Studio%20Code.app/Contents/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.html) module simulates a database with recovery data. It listens for TCP connections and responds to requests for missing packets.
-
-## Example Output
-
-When running the project, you should see output similar to the following:
-
-```
-// simulate realtime data from udp_server (SIP Feed: NYSE, AMEX, NASDAQ)
-// $ cargo run --bin udp_multicast_server
-Sent: SEQ:6|PRICE:106
-Sent: SEQ:7|PRICE:107
-Sent: SEQ:8|PRICE:108
-Sent: SEQ:9|PRICE:109
-Dropped packet SEQ:10 // NOTE: server doesn't actually drop packets, it's simulating the udp_client not receiving this packet.
-
-// data received by udp_client (Hedge Fund, Market Maker, Investment Bank, etc..)
-// $ cargo run --bin udp_multicast_client
-Received: SEQ:7|PRICE:107
-Received: SEQ:8|PRICE:108
-Received: SEQ:9|PRICE:109
-Received: SEQ:11|PRICE:111
-⚠️ Missing packet(s)! Requesting SEQ:10 from recovery server...
-Sending recovery request: GET SEQ:10
-✅ Recovered: Recovered data for SEQ:10 // comes after tcp_recovery sends data back
-
-// tcp_recovery_server acknowledging a request for dropped packets
-// $ cargo run --bin tcp_recovery_server
-Received request: GET SEQ:1
-Received request: GET SEQ:10
-```
