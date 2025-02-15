@@ -1,0 +1,20 @@
+[package]
+name = "udpmulticast_demo"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "udp_multicast_server"
+path = "src/udp_multicast_server.rs"
+
+[[bin]]
+name = "udp_multicast_client"
+path = "src/udp_multicast_client.rs"
+
+[[bin]]
+name = "tcp_recovery_server"
+path = "src/tcp_recovery_server.rs"
+
+[dependencies]
+byteorder = "1.4"
+tokio = { version = "1", features = ["full"] }
